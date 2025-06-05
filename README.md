@@ -19,7 +19,7 @@ This project demonstrates a Playwright test automation framework with Jenkins pi
 
 ### Architecture
 
-- **Jenkins Container**: Built from `jenkins/jenkins:lts` with .NET 6.0 SDK installed
+- **Jenkins Container**: Built from `jenkins/jenkins:lts` with .NET 8.0 SDK installed
 - **Test Execution**: Uses `mcr.microsoft.com/playwright/dotnet:v1.52.0-noble` Docker image as a Jenkins agent
 - **Allure Reporting**: Integrated for comprehensive test reporting with build configuration visibility
 
@@ -47,7 +47,7 @@ The pipeline is configured with the following parameters:
 
 - **BASE_URL**: The base URL for your tests (default: https://www.saucedemo.com)
 - **USERNAME**: Username for authentication (default: standard_user)
-- **PASSWORD**: Password for authentication (default: secret_sauce1)
+- **PASSWORD**: Password for authentication (default: secret_sauce)
 - **BROWSER_TYPE**: Browser to use for testing (choices: chromium, firefox, webkit)
 
 ## Allure Reporting Integration
@@ -65,7 +65,7 @@ Allure reporting has been integrated to provide rich, detailed test reports with
 
 ### Prerequisites
 
-- .NET 9.0 SDK
+- .NET 8.0 SDK
 - Allure command-line tool (for report generation)
 
 ### Install Allure Command-line Tool
