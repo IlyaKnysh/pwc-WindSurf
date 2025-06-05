@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RunSettings>
+  <!-- NUnit adapter settings -->
+  <NUnit>
+    <TestOutputXml>TestResults</TestOutputXml>
+  </NUnit>
+  
+  <!-- Allure settings -->
+  <AllureSettings>
+    <Directory>allure-results</Directory>
+    <EnableParameters>true</EnableParameters>
+    <EnableStepParameters>true</EnableStepParameters>
+    <AllureStepsEnabled>true</AllureStepsEnabled>
+  </AllureSettings>
+  
+  <!-- Test run parameters that can be overridden from command line -->
+  <TestRunParameters>
+    <!-- Browser configuration -->
+    <Parameter name="BaseUrl" value="https://www.saucedemo.com" />
+    <Parameter name="BrowserType" value="chromium" />
+    <Parameter name="Headless" value="false" />
+    <Parameter name="SlowMo" value="0" />
+    <Parameter name="Timeout" value="30000" />
+    <Parameter name="ViewportWidth" value="1280" />
+    <Parameter name="ViewportHeight" value="720" />
+    
+    <!-- Test execution configuration -->
+    <Parameter name="CaptureScreenshotOnFailure" value="true" />
+    <Parameter name="CaptureTraceOnFailure" value="true" />
+    <Parameter name="RetryCount" value="1" />
+  </TestRunParameters>
+</RunSettings>

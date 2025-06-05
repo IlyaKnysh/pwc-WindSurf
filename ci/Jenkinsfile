@@ -1,0 +1,116 @@
+// This Jenkinsfile is designed for "Pipeline script from SCM" job type in Jenkins
+
+pipeline {
+    agent any
+    
+    options {
+        skipDefaultCheckout(false)
+    }
+    
+    parameters {
+        string(name: 'BASE_URL', defaultValue: 'https://www.saucedemo.com', description: 'Base URL for tests')
+        string(name: 'USERNAME', defaultValue: 'standard_user', description: 'Username for authentication')
+        password(name: 'PASSWORD', defaultValue: 'secret_sauce1', description: 'Password for authentication')
+        choice(name: 'BROWSER_TYPE', choices: ['chromium', 'firefox', 'webkit'], description: 'Browser to run tests with')
+    }
+    
+    environment {
+        BASE_URL = "${params.BASE_URL}"
+        USERNAME = "${params.USERNAME}"
+        PASSWORD = "${params.PASSWORD}"
+        BROWSER_TYPE = "${params.BROWSER_TYPE}"
+    }
+    
+    stages {
+        stage('Build') {
+            agent {
+                docker {
+                    image 'mcr.microsoft.com/playwright/dotnet:v1.52.0-noble'
+                    reuseNode true
+                }
+            }
+            steps {
+                sh 'dotnet restore'
+                sh 'dotnet build --configuration Release'
+            }
+        }
+        
+        stage('Test') {
+            agent {
+                docker {
+                    image 'mcr.microsoft.com/playwright/dotnet:v1.52.0-noble'
+                    reuseNode true
+                }
+            }
+            steps {
+                script {
+                    def runsettingsContent = """<?xml version="1.0" encoding="utf-8"?>
+<RunSettings>
+  <RunConfiguration>
+    <EnvironmentVariables>
+      <PLAYWRIGHT_BROWSERS_PATH>/ms-playwright</PLAYWRIGHT_BROWSERS_PATH>
+      <BASE_URL>${env.BASE_URL}</BASE_URL>
+      <TEST_USERNAME>${env.USERNAME}</TEST_USERNAME>
+      <TEST_PASSWORD>${env.PASSWORD}</TEST_PASSWORD>
+      <BROWSER_TYPE>${env.BROWSER_TYPE}</BROWSER_TYPE>
+      <TEST_ENVIRONMENT>Jenkins</TEST_ENVIRONMENT>
+    </EnvironmentVariables>
+  </RunConfiguration>
+</RunSettings>"""
+                    writeFile file: 'PlaywrightTests.runsettings', text: runsettingsContent
+                }
+                
+                sh 'mkdir -p ./TestResults ./allure-results'
+                sh 'export ALLURE_RESULTS_DIRECTORY="./allure-results"'
+                
+                // Create Allure environment properties file to display build configuration in the report
+                script {
+                    def allureEnvContent = """
+                        BASE_URL=${env.BASE_URL}
+                        USERNAME=${env.USERNAME}
+                        BROWSER_TYPE=${env.BROWSER_TYPE}
+                        TEST_ENVIRONMENT=Jenkins
+                    """.trim()
+                    writeFile file: 'PlaywrightFramework.Tests/bin/Debug/net8.0/allure-results/environment.properties', text: allureEnvContent
+                }
+                
+                sh '''
+                TEST_PROJECTS=$(find . -name "*Tests.csproj" -o -name "*Test.csproj" | grep -v obj | grep -v bin || echo "")
+                
+                if [ -z "$TEST_PROJECTS" ]; then
+                    TEST_PROJECTS=$(grep -l "NUnit" --include="*.csproj" -r . || echo "")
+                fi
+                
+                if [ -z "$TEST_PROJECTS" ]; then
+                    TEST_PROJECTS=$(find . -name "*.sln" -type f)
+                fi
+                
+                for project in $TEST_PROJECTS; do
+                    dotnet test "$project" \
+                        --settings PlaywrightTests.runsettings \
+                        --logger "console;verbosity=detailed" \
+                        --logger "trx;LogFileName=TestResults.trx" \
+                        --results-directory ./TestResults
+                done
+                '''
+            }
+        }
+    }
+    
+    post {
+        always {
+            archiveArtifacts artifacts: 'TestResults/**', allowEmptyArchive: true
+            archiveArtifacts artifacts: '**/screenshots/**', allowEmptyArchive: true
+            archiveArtifacts artifacts: '**/allure-results/**', allowEmptyArchive: true
+            
+            script {
+                allure([
+                    reportBuildPolicy: 'ALWAYS',
+                    results: [[path: 'PlaywrightFramework.Tests/bin/Debug/net8.0/allure-results']]
+                ])
+            }
+            
+            cleanWs()
+        }
+    }
+}
