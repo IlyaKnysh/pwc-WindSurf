@@ -10,7 +10,7 @@ pipeline {
     parameters {
         string(name: 'BASE_URL', defaultValue: 'https://www.saucedemo.com', description: 'Base URL for tests')
         string(name: 'USERNAME', defaultValue: 'standard_user', description: 'Username for authentication')
-        password(name: 'PASSWORD', defaultValue: 'secret_sauce1', description: 'Password for authentication')
+        password(name: 'PASSWORD', defaultValue: 'secret_sauce', description: 'Password for authentication')
         choice(name: 'BROWSER_TYPE', choices: ['chromium', 'firefox', 'webkit'], description: 'Browser to run tests with')
     }
     
