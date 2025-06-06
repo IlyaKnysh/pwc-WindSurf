@@ -1,13 +1,13 @@
 using Microsoft.Playwright;
 
-namespace PlaywrightFramework.Core.Pages.Elements
+namespace PlaywrightFramework.Core.Pages
 {
     // Elements layer - contains only locators and selectors (no methods)
-    public class LoginElements
+    public class LoginPage
     {
         private readonly IPage _page;
 
-        public LoginElements(IPage page)
+        public LoginPage(IPage page)
         {
             _page = page;
         }

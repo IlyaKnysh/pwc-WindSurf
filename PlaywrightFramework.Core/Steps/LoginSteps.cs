@@ -1,18 +1,18 @@
 using Microsoft.Playwright;
-using PlaywrightFramework.Core.Pages.Elements;
 using Allure.NUnit.Attributes;
 using NUnit.Framework;
 using System.Threading.Tasks;
+using PlaywrightFramework.Core.Pages;
 
 namespace PlaywrightFramework.Core.Steps
 {
     public class LoginSteps : BaseSteps
     {
-        private readonly LoginElements _elements;
+        private readonly LoginPage _elements;
 
         public LoginSteps(IPage page) : base(page)
         {
-            _elements = new LoginElements(page);
+            _elements = new LoginPage(page);
         }
 
         [AllureStep("Navigate to login page")]

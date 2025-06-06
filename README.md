@@ -157,29 +157,3 @@ public async Task LoginAsync(string username, string password)
 2. SR status reporting
 3. Implement strict and dynamic resource selection for tests
 4. Selectors versioning management - could be solved with branching strategy
-
-### Pipeline Stages
-
-The Jenkins pipeline includes the following stages:
-
-1. **Build**: Builds the solution
-2. **Test**: Runs the tests with the configured parameters
-
-### Test Framework Features
-
-The Playwright test framework includes the following features:
-
-- Screenshot capture on test failures (configured in BaseTest.cs)
-- Trace capture for debugging (configured in BaseTest.cs)
-- Environment-specific configuration through environment variables
-
-### Allure Reporting
-
-The pipeline automatically configures Allure reporting with the correct environment variables and directory structure. Key features include:
-
-- Automatic generation of Allure reports after test execution
-- Display of build configuration parameters in the report (BASE_URL, USERNAME, BROWSER_TYPE)
-- Proper collection of test results from the correct directory
-- Integration with Jenkins Allure plugin for report viewing
-
-After the pipeline runs, you can view the Allure report directly in Jenkins using the published HTML report.

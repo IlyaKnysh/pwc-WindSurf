@@ -1,12 +1,10 @@
 using Microsoft.Playwright;
-using NUnit.Framework;
 using NUnit.Framework.Interfaces;
 using PlaywrightFramework.Core.Assertions;
 using PlaywrightFramework.Core.Browser;
 using PlaywrightFramework.Core.Configuration;
 using Allure.NUnit;
 using Allure.Net.Commons;
-using System.IO;
 
 namespace PlaywrightFramework.Tests.Tests
 {
@@ -34,7 +32,7 @@ namespace PlaywrightFramework.Tests.Tests
         public virtual async Task TearDown()
         {
             var testName = TestContext.CurrentContext.Test.Name;
-            var threadId = System.Threading.Thread.CurrentThread.ManagedThreadId;
+            var threadId = Thread.CurrentThread.ManagedThreadId;
             var testStatus = TestContext.CurrentContext.Result.Outcome.Status;
             
             LogTestCleanupStart(testName, threadId);

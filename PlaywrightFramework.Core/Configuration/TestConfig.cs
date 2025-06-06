@@ -118,7 +118,7 @@ namespace PlaywrightFramework.Core.Configuration
                     return envPassword;
                     
                 // Fall back to default
-                return "secret_sauce!";
+                return "secret_sauce";
             }
         }
     }
